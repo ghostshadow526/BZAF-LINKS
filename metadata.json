@@ -1,0 +1,6 @@
+{
+  "name": "Ridas Meat",
+  "description": "Premium beef supply company offering the finest cuts of hand-selected, sustainably-raised, and perfectly dry-aged beef.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
