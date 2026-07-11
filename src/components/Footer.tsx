@@ -27,7 +27,7 @@ export default function Footer({ onScrollTo }: FooterProps) {
           <div className="md:col-span-4 space-y-4 flex flex-col items-center md:items-start text-center md:text-left" id="footer-brand">
             <div className="w-16 h-16 rounded-sm overflow-hidden border border-white/10 bg-[#16161b] p-1 flex items-center justify-center select-none" id="footer-logo">
               <img 
-                src="https://raw.githubusercontent.com/ghostshadow526/BZAF-LINKS/main/ridalogo.png" 
+                src="https://raw.githubusercontent.com/ghostshadow526/BZAF-LINKS/main/logo.png.png" 
                 alt="Rida Logo" 
                 className="w-full h-full object-contain"
                 referrerPolicy="no-referrer"

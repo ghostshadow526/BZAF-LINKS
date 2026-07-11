@@ -144,7 +144,7 @@ export default function ProductCatalog({ onBookClick }: ProductCatalogProps) {
             <div className="flex flex-col items-start" id="feat-dryaging">
               <div className="mb-4 w-16 h-16 rounded-full overflow-hidden border border-brand-dark/15 flex items-center justify-center p-1 bg-white select-none">
                 <img 
-                  src="https://raw.githubusercontent.com/ghostshadow526/BZAF-LINKS/main/ridalogo.png" 
+                  src="https://raw.githubusercontent.com/ghostshadow526/BZAF-LINKS/main/logo.png.png" 
                   alt="Rida Logo" 
                   className="w-full h-full object-contain"
                   referrerPolicy="no-referrer"

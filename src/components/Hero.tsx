@@ -35,7 +35,7 @@ export default function Hero({ onBookClick, onScrollTo }: HeroProps) {
             {/* Branded Logo Badge */}
             <div className="flex items-center space-x-6 mb-4" id="hero-logo-badge">
               <img 
-                src="https://raw.githubusercontent.com/ghostshadow526/BZAF-LINKS/main/ridalogo.png" 
+                src="https://raw.githubusercontent.com/ghostshadow526/BZAF-LINKS/main/logo.png.png" 
                 alt="Rida Logo" 
                 className="w-24 sm:w-32 h-auto object-contain select-none"
                 referrerPolicy="no-referrer"

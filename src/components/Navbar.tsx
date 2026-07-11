@@ -130,7 +130,7 @@ export default function Navbar({ onBookClick, onScrollTo, activeSection }: Navba
             >
               <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-brand-red bg-brand-dark shadow-lg shadow-brand-red/20 transition-all duration-300 group-hover:scale-110 group-hover:border-white">
                 <img 
-                  src="https://raw.githubusercontent.com/ghostshadow526/BZAF-LINKS/main/ridalogo.png" 
+                  src="https://raw.githubusercontent.com/ghostshadow526/BZAF-LINKS/main/logo.png.png" 
                   alt="Rida Logo" 
                   className="w-full h-full object-cover"
                   referrerPolicy="no-referrer"
