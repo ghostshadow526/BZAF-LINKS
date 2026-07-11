@@ -24,10 +24,15 @@ export default function Footer({ onScrollTo }: FooterProps) {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center pb-12 border-b border-white/5" id="footer-upper">
           
           {/* Brand block */}
-          <div className="md:col-span-4 space-y-4 text-center md:text-left" id="footer-brand">
-            <span className="font-display font-black text-2xl tracking-widest text-brand-red select-none">
-              RIDAS MEAT
-            </span>
+          <div className="md:col-span-4 space-y-4 flex flex-col items-center md:items-start text-center md:text-left" id="footer-brand">
+            <div className="w-16 h-16 rounded-sm overflow-hidden border border-white/10 bg-[#16161b] p-1 flex items-center justify-center select-none" id="footer-logo">
+              <img 
+                src="https://raw.githubusercontent.com/ghostshadow526/BZAF-LINKS/main/ridalogo.png" 
+                alt="Rida Logo" 
+                className="w-full h-full object-contain"
+                referrerPolicy="no-referrer"
+              />
+            </div>
             <p className="text-[11px] text-brand-gray font-light max-w-xs leading-relaxed">
               Premium dry-aged beef supplies and culinary consulting services. Raised sustainably, butchered by hand, delivered in deep cold states.
             </p>
@@ -35,14 +40,14 @@ export default function Footer({ onScrollTo }: FooterProps) {
 
           {/* Links block */}
           <div className="md:col-span-5 flex justify-center space-x-6 flex-wrap" id="footer-links">
-            {['home', 'cuts', 'why-us', 'reviews', 'contact'].map((section) => (
+            {['home', 'fish', 'why-us', 'reviews', 'gallery'].map((section) => (
               <button
                 key={section}
                 onClick={() => onScrollTo(section)}
                 className="text-xs font-mono tracking-wider font-bold text-gray-400 hover:text-white uppercase cursor-pointer"
                 id={`footer-link-${section}`}
               >
-                {section === 'cuts' ? 'OUR CUTS' : section === 'why-us' ? 'WHY US' : section}
+                {section === 'fish' ? "IBRO'S FISH" : section === 'why-us' ? 'OUR HISTORY' : section === 'gallery' ? 'OUR GALLERY' : section}
               </button>
             ))}
           </div>
@@ -51,10 +56,10 @@ export default function Footer({ onScrollTo }: FooterProps) {
           <div className="md:col-span-3 flex flex-col items-center md:items-end space-y-1.5" id="footer-guarantee">
             <div className="flex items-center space-x-2 text-brand-red text-xs font-bold" id="footer-badge-item">
               <ShieldCheck size={14} />
-              <span className="font-mono tracking-wider uppercase">100% TRACEABLE ANGUS</span>
+              <span className="font-mono tracking-wider uppercase">NAFDAC APPROVED</span>
             </div>
             <span className="text-[9px] font-mono text-brand-gray uppercase text-center md:text-right">
-              EST. NO. GB-1283-MEAT • APPROVED BY FDA/DEFRA
+              REGISTRATION NO. 01-8374-MEAT • PREMIUM SELECTION
             </span>
           </div>
 

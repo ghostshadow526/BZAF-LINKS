@@ -3,290 +3,181 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Flame, Calculator, ShoppingCart, Check, Info, FlameKindling, Utensils } from 'lucide-react';
-import { PRODUCTS } from '../data';
-import { MeatProduct } from '../types';
+import React from 'react';
 
 interface ProductCatalogProps {
-  onAddToCart: (product: MeatProduct, weight: number) => void;
+  onBookClick: () => void;
 }
 
-export default function ProductCatalog({ onAddToCart }: ProductCatalogProps) {
-  const [selectedCategory, setSelectedCategory] = useState<'All' | 'Steaks' | 'Roasts' | 'Ground' | 'Wagyu'>('All');
-  const [productWeights, setProductWeights] = useState<Record<string, number>>({});
-  const [addedProductId, setAddedProductId] = useState<string | null>(null);
+// Hand-drawn sketch SVG components with dark strokes
+const SkewerIcon = () => (
+  <svg viewBox="0 0 100 100" className="w-16 h-16 text-brand-dark fill-none stroke-[1.1] stroke-current select-none" id="icon-skewer">
+    {/* Handle and Main skewer line */}
+    <path d="M15 85 L85 15" />
+    <circle cx="13" cy="87" r="3" />
+    {/* Skewered meat cubes and veggies */}
+    <rect x="25" y="60" width="14" height="14" rx="2" transform="rotate(-45 32 67)" className="fill-none" />
+    <rect x="42" y="43" width="14" height="14" rx="2" transform="rotate(-45 49 50)" className="fill-none" />
+    <rect x="59" y="26" width="14" height="14" rx="2" transform="rotate(-45 66 33)" className="fill-none" />
+    {/* Spacers representing onion/peppers */}
+    <path d="M25 75 L35 65" />
+    <path d="M42 58 L52 48" />
+    <path d="M59 41 L69 31" />
+  </svg>
+);
 
-  const categories: ('All' | 'Steaks' | 'Roasts' | 'Ground' | 'Wagyu')[] = ['All', 'Steaks', 'Roasts', 'Ground', 'Wagyu'];
+const RibsIcon = () => (
+  <svg viewBox="0 0 100 100" className="w-16 h-16 text-brand-dark fill-none stroke-[1.1] stroke-current select-none" id="icon-ribs">
+    {/* Curved bone columns */}
+    <path d="M25 45 C 35 20, 42 20, 48 45" />
+    <path d="M40 45 C 50 20, 57 20, 63 45" />
+    <path d="M55 45 C 65 20, 72 20, 78 45" />
+    <path d="M70 45 C 80 20, 87 20, 93 45" />
+    {/* Individual bone tips */}
+    <circle cx="36" cy="25" r="2" />
+    <circle cx="51" cy="25" r="2" />
+    <circle cx="66" cy="25" r="2" />
+    <circle cx="81" cy="25" r="2" />
+    {/* Main ribeye slab outline */}
+    <path d="M12 45 C 22 35, 82 35, 92 45 C 92 65, 12 65, 12 45 Z" />
+    {/* Shading/texture */}
+    <path d="M18 52 C 38 48, 68 48, 86 52" />
+  </svg>
+);
 
-  // Filter products
-  const filteredProducts = PRODUCTS.filter(p => {
-    if (selectedCategory === 'All') return true;
-    return p.category === selectedCategory;
-  });
+const SteakIcon = () => (
+  <svg viewBox="0 0 100 100" className="w-16 h-16 text-brand-dark fill-none stroke-[1.1] stroke-current select-none" id="icon-steak">
+    {/* Steak perimeter boundary */}
+    <path d="M25 30 C 15 50, 22 80, 52 80 C 72 80, 82 65, 82 45 C 82 25, 62 15, 42 20 C 32 22, 28 25, 25 30 Z" />
+    {/* Distinct fat band */}
+    <path d="M25 30 C 27 25, 33 22, 42 20 C 52 18, 62 25, 72 28 C 78 30, 80 35, 82 45" />
+    {/* Marrow bone */}
+    <path d="M52 45 C 52 35, 62 30, 67 35 C 69 40, 65 48, 55 48 C 53 48, 52 46, 52 45 Z" />
+    <circle cx="60" cy="39" r="3" />
+    {/* Meat grains and marbling */}
+    <path d="M32 45 Q 37 50, 39 42" />
+    <path d="M37 60 Q 45 62, 47 55" />
+    <path d="M57 62 Q 65 58, 62 52" />
+  </svg>
+);
 
-  // Get current weight for a product (default to 2 lbs)
-  const getWeight = (id: string) => productWeights[id] || 2;
+const DrumstickIcon = () => (
+  <svg viewBox="0 0 100 100" className="w-16 h-16 text-brand-dark fill-none stroke-[1.1] stroke-current select-none" id="icon-drumstick">
+    {/* Drumstick fleshy bulb */}
+    <path d="M25 45 C 20 25, 45 15, 60 30 C 70 40, 65 55, 55 65 L40 80" />
+    {/* Exposed leg bone */}
+    <path d="M42 78 L32 88" />
+    {/* Cartilage bone joints */}
+    <circle cx="29" cy="85" r="4" />
+    <circle cx="34" cy="90" r="4" />
+    {/* Simple shading line */}
+    <path d="M38 42 C 45 38, 52 42, 55 50" />
+  </svg>
+);
 
-  // Handle slider weight changes
-  const handleWeightChange = (id: string, weight: number) => {
-    setProductWeights(prev => ({ ...prev, [id]: weight }));
-  };
-
-  const handleAddToCart = (product: MeatProduct) => {
-    const weight = getWeight(product.id);
-    onAddToCart(product, weight);
-    
-    // Trigger localized success animation feedback
-    setAddedProductId(product.id);
-    setTimeout(() => {
-      setAddedProductId(null);
-    }, 1500);
-  };
-
-  // Get optimal cooking suggestion based on product type
-  const getCookingTip = (category: string) => {
-    switch (category) {
-      case 'Steaks': return 'Pan-sear with butter & rosemary or Grill high heat';
-      case 'Wagyu': return 'Sear briefly on a pre-heated cast iron, no oil needed';
-      case 'Roasts': return 'Low & slow smoking or slow-roasted oven bake';
-      case 'Ground': return 'Medium-high heat cast iron skillet or backyard grill';
-      default: return 'Reverse sear or sous vide for premium results';
-    }
-  };
-
+export default function ProductCatalog({ onBookClick }: ProductCatalogProps) {
   return (
-    <section id="cuts" className="py-24 bg-brand-slate border-y border-white/5 scroll-mt-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section 
+      id="cuts" 
+      className="relative w-full bg-[#f4f3f0] border-y border-brand-dark/5 scroll-mt-16 overflow-hidden"
+    >
+      <div className="grid grid-cols-1 lg:grid-cols-12 min-h-screen lg:min-h-[1050px] items-stretch">
         
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16" id="catalog-header-wrapper">
-          <span className="text-xs font-mono font-bold tracking-[0.25em] text-brand-red uppercase block mb-3">
-            MASTER BUTCHER SELECTIONS
-          </span>
-          <h2 className="font-display font-black text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight" id="catalog-title">
-            BROWSE OUR PREMIUM CUTS
-          </h2>
-          <div className="w-16 h-1 bg-brand-red mx-auto mt-4 mb-6"></div>
-          <p className="text-brand-gray text-sm sm:text-base font-light">
-            Each cut is carved by hand on the day of delivery, vacuum sealed immediately, and labeled with its unique farm source and aging parameters.
-          </p>
+        {/* Left Side: Full-bleed tall video occupying the side completely */}
+        <div 
+          className="lg:col-span-5 relative h-[500px] lg:h-auto w-full bg-brand-dark bg-cover bg-center overflow-hidden"
+          style={{ backgroundImage: "url('https://raw.githubusercontent.com/ghostshadow526/BZAF-LINKS/main/section2.jpg')" }}
+          id="catalog-video-col"
+        >
+          <video 
+            src="https://ik.imagekit.io/qjg532nyu/SaveClip.App_AQNAJ0MQ5xoUT0cvd7Ure1uBgHUmnr58S2Ii_vr2HmDQY1swHr41rMweJIQaC2XRQWAK0iHsudlqAtDdpEsjQSy0.mp4" 
+            autoPlay 
+            loop 
+            muted 
+            playsInline 
+            poster="https://raw.githubusercontent.com/ghostshadow526/BZAF-LINKS/main/section2.jpg"
+            className="absolute inset-0 w-full h-full object-cover"
+            id="catalog-looping-video"
+          />
+          {/* Transparent clean look, no dark filter or artificial shade */}
         </div>
 
-        {/* Category Filters */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12" id="catalog-category-tabs">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`font-display text-xs sm:text-sm font-bold tracking-widest px-6 py-3 rounded-lg border transition-all duration-300 cursor-pointer ${
-                selectedCategory === category
-                  ? 'bg-brand-red border-brand-red text-white shadow-lg shadow-brand-red/10'
-                  : 'bg-brand-dark/40 border-white/5 text-gray-300 hover:text-white hover:bg-brand-dark/80 hover:border-white/15'
-              }`}
-              id={`category-tab-${category.toLowerCase()}`}
-            >
-              {category.toUpperCase()}
-            </button>
-          ))}
-        </div>
-
-        {/* Products Bento-Style Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="catalog-grid">
+        {/* Right Side: Clean light grey/off-white background with dark elements */}
+        <div className="lg:col-span-7 flex flex-col justify-center py-16 lg:py-24 px-6 sm:px-12 lg:px-20 text-brand-dark text-left bg-[#f4f3f0]" id="catalog-content-col">
           
-          {/* Loop over filtered products */}
-          <AnimatePresence mode="popLayout">
-            {filteredProducts.map((product) => {
-              const currentWeight = getWeight(product.id);
-              const calculatedPrice = product.pricePerLb * currentWeight;
-              const isAdded = addedProductId === product.id;
+          {/* Handdrawn tiny label */}
+          <span className="font-handwritten text-[#a5583a] text-3xl select-none block mb-3" id="catalog-cursive-label">
+            the ridas promise
+          </span>
+          
+          {/* Main Huge Typography Header */}
+          <h2 className="font-display font-black text-4xl sm:text-5xl lg:text-5xl text-brand-dark uppercase tracking-tight leading-[1.0] mb-6" id="catalog-main-title">
+            why choose our <br />
+            premium beef
+          </h2>
+          
+          {/* Description Copy block */}
+          <p className="text-gray-600 font-light text-xs sm:text-sm leading-relaxed max-w-xl mb-10" id="catalog-desc-para">
+            Unlike industrial supermarkets, Ridas Meat operates on a boutique farm-to-table supply network. We reject high-yield shortcuts to prioritize animal welfare, rich natural marbling, and precision wet and dry aging.
+          </p>
 
-              return (
-                <motion.div
-                  key={product.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.4 }}
-                  className="bg-brand-dark/50 border border-white/5 hover:border-white/10 rounded-2xl overflow-hidden flex flex-col justify-between hover:shadow-2xl transition-all duration-300 group"
-                  id={`product-card-${product.id}`}
-                >
-                  
-                  {/* Card Media Section */}
-                  <div className="relative aspect-[4/3] overflow-hidden bg-brand-dark" id={`card-media-${product.id}`}>
-                    <img 
-                      src={product.image} 
-                      alt={product.name} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                      referrerPolicy="no-referrer"
-                      id={`card-img-${product.id}`}
-                    />
-                    
-                    {/* Floating Aging Label */}
-                    {product.aging && (
-                      <div className="absolute bottom-4 left-4 bg-brand-dark/85 border border-white/10 px-3 py-1.5 rounded-lg backdrop-blur-md" id={`card-aging-${product.id}`}>
-                        <span className="text-[10px] font-mono font-bold tracking-wider text-brand-red uppercase">
-                          {product.aging}
-                        </span>
-                      </div>
-                    )}
+          {/* 3 Premium Feature Cards with Rida Logo in the middle one */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mb-6" id="catalog-features-grid">
+            
+            {/* Feature 1 */}
+            <div className="flex flex-col items-start" id="feat-certified">
+              <div className="mb-4">
+                <SkewerIcon />
+              </div>
+              <h4 className="font-display font-black text-base text-brand-dark uppercase tracking-wide">
+                100% Certified Premium
+              </h4>
+              <p className="text-gray-500 text-xs font-light mt-2 leading-relaxed">
+                We only source from high-welfare farms that practice sustainable grazing, raising cattle with zero added hormones or non-therapeutic antibiotics.
+              </p>
+              <div className="mt-4 text-[9px] font-mono text-[#a5583a] tracking-widest font-semibold uppercase">
+                GUARANTEED QUALITY STANDARD
+              </div>
+            </div>
+            
+            {/* Feature 2: With Circular Rida Logo */}
+            <div className="flex flex-col items-start" id="feat-dryaging">
+              <div className="mb-4 w-16 h-16 rounded-full overflow-hidden border border-brand-dark/15 flex items-center justify-center p-1 bg-white select-none">
+                <img 
+                  src="https://raw.githubusercontent.com/ghostshadow526/BZAF-LINKS/main/ridalogo.png" 
+                  alt="Rida Logo" 
+                  className="w-full h-full object-contain"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+              <h4 className="font-display font-black text-base text-brand-dark uppercase tracking-wide">
+                Artisanal Dry Aging
+              </h4>
+              <p className="text-gray-500 text-xs font-light mt-2 leading-relaxed">
+                Our master butchers age beef in custom Himalayan salt brick chambers, temperature-locked to concentrate deep, nutty, umami undertones.
+              </p>
+              <div className="mt-4 text-[9px] font-mono text-[#a5583a] tracking-widest font-semibold uppercase">
+                GUARANTEED QUALITY STANDARD
+              </div>
+            </div>
+            
+            {/* Feature 3 */}
+            <div className="flex flex-col items-start" id="feat-delivery">
+              <div className="mb-4">
+                <DrumstickIcon />
+              </div>
+              <h4 className="font-display font-black text-base text-brand-dark uppercase tracking-wide">
+                Precision Cold Delivery
+              </h4>
+              <p className="text-gray-500 text-xs font-light mt-2 leading-relaxed">
+                Every order is hand-cut, vacuum-sealed, and shipped in custom thermal insulation with active gel-pack cooling to guarantee fresh kitchen arrival.
+              </p>
+              <div className="mt-4 text-[9px] font-mono text-[#a5583a] tracking-widest font-semibold uppercase">
+                GUARANTEED QUALITY STANDARD
+              </div>
+            </div>
 
-                    {/* Category Label */}
-                    <div className="absolute top-4 left-4 bg-brand-red px-2.5 py-1 rounded text-[9px] font-mono tracking-widest text-white font-bold" id={`card-cat-${product.id}`}>
-                      {product.category.toUpperCase()}
-                    </div>
-
-                    {/* Marbling Score Badge */}
-                    {product.marblingScore && (
-                      <div className="absolute top-4 right-4 bg-black/75 px-2.5 py-1 rounded text-[9px] font-mono tracking-widest text-brand-gray border border-white/15 font-semibold" id={`card-marbling-${product.id}`}>
-                        {product.marblingScore}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Card Details Section */}
-                  <div className="p-6 flex-grow flex flex-col justify-between space-y-6" id={`card-body-${product.id}`}>
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-start">
-                        <h3 className="font-display font-extrabold text-lg text-white group-hover:text-brand-red transition-colors duration-200">
-                          {product.name}
-                        </h3>
-                        <span className="font-mono text-xs font-bold text-brand-red shrink-0 ml-2 mt-1">
-                          ${product.pricePerLb.toFixed(2)}/LB
-                        </span>
-                      </div>
-                      
-                      <p className="text-xs text-gray-400 font-light leading-relaxed">
-                        {product.description}
-                      </p>
-                    </div>
-
-                    {/* Interactive Weight Slider & Pricing Calculator */}
-                    <div className="bg-brand-slate/60 border border-white/5 rounded-xl p-4 space-y-3" id={`weight-calculator-${product.id}`}>
-                      <div className="flex items-center justify-between text-xs font-mono">
-                        <span className="text-brand-gray flex items-center gap-1">
-                          <Calculator size={13} className="text-brand-red" />
-                          SELECT WEIGHT:
-                        </span>
-                        <span className="text-white font-bold bg-brand-dark border border-white/10 px-2 py-0.5 rounded">
-                          {currentWeight.toFixed(1)} LBs
-                        </span>
-                      </div>
-
-                      <input 
-                        type="range"
-                        min="1.0"
-                        max="10.0"
-                        step="0.5"
-                        value={currentWeight}
-                        onChange={(e) => handleWeightChange(product.id, parseFloat(e.target.value))}
-                        className="w-full accent-brand-red h-1.5 bg-brand-dark rounded-lg cursor-pointer appearance-none"
-                        id={`weight-slider-${product.id}`}
-                      />
-
-                      <div className="flex items-center justify-between pt-1 border-t border-white/5">
-                        <span className="text-[10px] font-mono text-brand-gray">ESTIMATED TOTAL:</span>
-                        <span className="font-mono text-sm font-black text-white tracking-tight">
-                          ${calculatedPrice.toFixed(2)}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Quick Chef's Tip */}
-                    <div className="flex items-start space-x-2 text-[10px] text-brand-gray bg-brand-dark/30 p-2 rounded-lg border border-white/5">
-                      <Utensils size={12} className="text-brand-red/70 mt-0.5 shrink-0" />
-                      <span><strong>Chef tip:</strong> {getCookingTip(product.category)}</span>
-                    </div>
-
-                    {/* Add To Cart Trigger */}
-                    <button
-                      onClick={() => handleAddToCart(product)}
-                      className={`w-full py-3.5 rounded-xl text-xs font-display font-bold tracking-widest uppercase flex items-center justify-center space-x-2 transition-all duration-300 cursor-pointer ${
-                        isAdded
-                          ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
-                          : 'bg-brand-red hover:bg-brand-red/90 text-white shadow-lg shadow-brand-red/5 hover:shadow-brand-red/15 transform hover:-translate-y-0.5'
-                      }`}
-                      id={`card-add-btn-${product.id}`}
-                    >
-                      {isAdded ? (
-                        <>
-                          <Check size={14} className="animate-scale" />
-                          <span>ADDED TO BASKET!</span>
-                        </>
-                      ) : (
-                        <>
-                          <ShoppingCart size={14} />
-                          <span>ADD {currentWeight.toFixed(1)} LBs TO BASKET</span>
-                        </>
-                      )}
-                    </button>
-
-                  </div>
-
-                </motion.div>
-              );
-            })}
-
-            {/* Custom Static Card showcasing seared steak - rhythmic design break! */}
-            {selectedCategory === 'All' && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="bg-brand-dark/30 border border-brand-red/20 rounded-2xl overflow-hidden flex flex-col justify-between p-6 relative group"
-                id="dry-aging-showcase-card"
-              >
-                <div className="absolute inset-0 opacity-10 mix-blend-overlay pointer-events-none">
-                  <div className="w-full h-full bg-brand-red"></div>
-                </div>
-
-                <div className="space-y-4 relative z-10">
-                  <div className="flex items-center space-x-2 text-brand-red" id="showcase-badge">
-                    <FlameKindling size={16} className="animate-pulse" />
-                    <span className="text-[10px] font-mono font-bold tracking-widest uppercase">THE DRY-AGING STANDARD</span>
-                  </div>
-
-                  <h3 className="font-display font-extrabold text-xl text-white tracking-tight leading-snug">
-                    HOW WE AGE TO PERFECTION
-                  </h3>
-
-                  <p className="text-xs text-gray-400 font-light leading-relaxed">
-                    Dry-aging isn’t just storage; it’s an art form. Our custom-designed Himalayan pink salt aging chambers draw out moisture while naturally occurring enzymes break down connective tissue. This concentrates the deep beefy flavor into a nutty, buttery delicacy.
-                  </p>
-                </div>
-
-                {/* Sliced steak generated image embedding */}
-                <div className="my-4 aspect-[16/9] rounded-xl overflow-hidden border border-white/10 bg-black relative" id="showcase-image-wrapper">
-                  <img 
-                    src="/src/assets/images/seared_premium_steak_1783637281802.jpg" 
-                    alt="Seared premium dry-aged steak serving suggestion" 
-                    className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500"
-                    referrerPolicy="no-referrer"
-                    id="showcase-sliced-steak-img"
-                  />
-                  <div className="absolute bottom-2 right-2 bg-black/80 px-2 py-0.5 rounded text-[8px] font-mono text-white tracking-widest uppercase font-semibold">
-                    SERVING SUGGESTION
-                  </div>
-                </div>
-
-                <div className="pt-2" id="showcase-card-footer">
-                  <a 
-                    href="#contact" 
-                    className="text-xs font-mono font-bold text-brand-red hover:text-white transition-colors tracking-wider block"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const el = document.getElementById('contact');
-                      el?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                  >
-                    CONSULT WITH OUR BUTCHER →
-                  </a>
-                </div>
-              </motion.div>
-            )}
-
-          </AnimatePresence>
+          </div>
 
         </div>
 

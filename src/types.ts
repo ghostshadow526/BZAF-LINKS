@@ -7,7 +7,6 @@ export interface MeatProduct {
   id: string;
   name: string;
   category: 'Steaks' | 'Roasts' | 'Ground' | 'Wagyu';
-  pricePerLb: number;
   description: string;
   image: string;
   marblingScore?: string;
@@ -15,11 +14,12 @@ export interface MeatProduct {
   isFeatured?: boolean;
 }
 
-export interface CartItem {
-  id: string; // combination of product.id + weight to allow same product with different weights
-  product: MeatProduct;
-  quantity: number;
-  weight: number; // in lbs
+export interface ReservationDetails {
+  date: string;
+  time: string;
+  adults: number;
+  children: number;
+  foodIntolerances: string;
 }
 
 export interface Review {
@@ -31,11 +31,3 @@ export interface Review {
   cutReviewed?: string;
 }
 
-export interface OrderDetails {
-  name: string;
-  email: string;
-  phone: string;
-  deliveryMethod: 'pickup' | 'delivery';
-  address?: string;
-  notes?: string;
-}
